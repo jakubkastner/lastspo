@@ -1,0 +1,21 @@
+.tracklist .track {
+    display: grid;
+    grid-template-columns: .7fr 1.5fr 1.5fr .3fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        ". . . .";
+
+    &:hover {
+        background-color: yellow;
+    }
+}
+
+.content {
+    display: grid;
+    grid-template-columns: .4fr 1.6fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        ". . . .";
+}

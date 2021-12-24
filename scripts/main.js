@@ -1,0 +1,204 @@
+api.spotify.getPlaylists = async function (url = api.spotify.url + '/me/playlists?limit=50') {
+    var json = await api.fetchJson(url, api.spotify.options, 'Failed to get playlists.');
+
+    if (json == null) {
+        // api error
+        /*localStorage.removeItem(USER_ACCESS);
+        userAccess = null;*/
+        console.log("json api null");
+        return;
+    }
+
+    // získá umělce
+    var playlists = json.items;
+    if (!playlists) {
+        //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
+        console.log("json items null");
+        return;
+    }
+    if (playlists.length < 1) {
+        console.log("0 playlists");
+        //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
+        return;
+    }
+
+    await program.savePlaylists(playlists);
+
+    // získá seznam tracků pro playlisty uživatele
+    /*await asyncForEach(playlists, async playlist => {
+        if (playlist.tracks.total < 1) {
+            return;
+        }
+        if (!playlist.tracks.href) {
+            return; //??
+        }
+        if (playlist.collaborative || playlist.owner.id == user.spotify.api.id) {
+            playlist.tracks.list = await api.spotify.getPlaylistTracks(playlist.tracks.href);
+        }
+    });
+
+    // uložení do seznamu playlistů
+    user.playlists = user.playlists.concat(playlists);*/
+
+    if (json.next) {
+        // existuje další stránka seznamu playlistů
+        // -> odešle se další dotaz
+        await api.spotify.getPlaylists(json.next);
+    }
+    else {
+        // display playlists
+        await el.displayPlaylists();
+    }
+}
+
+el.displayPlaylists = async function () {
+    var playlistsHtml = '';
+    await asyncForEach(user.playlists, async playlist => {
+        var playlistHtml = '<div class="playlist" id="' + playlist.id + '">' + playlist.name + ' (' + playlist.tracks.total + ')</div>'
+        playlistsHtml += playlistHtml;
+    });
+    await asyncForEach(el.main.playlists, async elPlaylists => {
+        elPlaylists.innerHTML += playlistsHtml;
+    });
+
+    el.main.playlist = document.querySelectorAll('.playlists .playlist');
+
+    /**
+     * Click to playlist item
+     */
+    el.main.playlist.forEach(playlistEl => playlistEl.addEventListener('click', async function () {
+        //await api.spotify.getTracks(el);
+
+        await asyncForEach(el.main.tracklist, async elTracklist => {
+            elTracklist.innerHTML = '';
+        });
+
+        var playlist = user.playlists.find(x => x.id === playlistEl.id);
+        var tracks = await api.spotify.getPlaylistTracks(playlist.tracks.href);
+        playlist.tracks.items = tracks;
+
+        var tracklistHtml = '<div class="tracklist"><h4>' + playlist.name + '</h4><div class="track"><div class="artist">Artist</div><div class="name">Track</div><div class="album">Album</div><div class="plays">Number of plays</div></div>';
+
+
+        await asyncForEach(tracks, async trackFull => {
+            var track = trackFull.track;
+            var plays = 0;
+            await asyncForEach(user.historyTracks, async trackHistory => {
+                if (trackHistory.name === track.name && trackHistory.artist === track.artists[0].name) {
+                    plays = trackHistory.plays;
+                    return;
+                }
+            });
+            var trackHtml = '<div class="track"><div>' + track.artists[0].name + '</div><div>' + track.name + '</div><div>' + track.album.name + '</div><div>' + plays  + '</div></div>'
+            tracklistHtml += trackHtml;
+        });
+
+        tracklistHtml += '</div>';
+        await asyncForEach(el.main.tracklist, async elTracklist => {
+            elTracklist.innerHTML += tracklistHtml;
+        });
+    }));
+}
+
+program.savePlaylists = async function (playlists) {
+    await asyncForEach(playlists, async playlist => {
+        if (playlist.tracks.total < 1) {
+            return;
+        }
+        if (!playlist.tracks.href) {
+            return; //??
+        }
+        if (playlist.collaborative || playlist.owner.id == user.spotify.api.id) {
+            user.playlists = user.playlists.concat(playlist);
+        }
+    });
+}
+
+api.spotify.getPlaylistTracks = async function (url) {
+    // získá json z api
+    // https://api.spotify.com/v1/playlists/{id}/tracks?market={market}&limit=100
+    var json = await api.fetchJson(url, api.spotify.options, 'Failed to get list of your playlists:'); // !!
+
+    if (json == null) {
+        // chyba získávání
+        return null;
+    }
+
+    // získá umělce
+    var tracks = json.items;
+    if (!tracks) {
+        //showError('No playlists can be obtained', 'no album songs'); // !!
+        return null;
+    }
+    if (tracks.length < 1) {
+        //showError('No playlists can be obtained', 'no album songs'); // !!
+        return null;
+    }
+
+    if (json.next) {
+        // existuje další stránka seznamu umělců
+        // -> odešle se další dotaz
+        var newTracksList = await api.spotify.getPlaylistTracks(json.next);
+        tracks = tracks.concat(newTracksList);
+    }
+    return tracks;
+}
+
+api.lastfm.getHistory = async function (page = 1) {
+
+    /*await asyncForEach(el.main.playlists, async elPlaylists => {
+        elPlaylists.style.display = 'none';
+    });*/
+    await asyncForEach(el.main.error, async elError => {
+        elError.innerHTML = 'Getting your history: ' + page;
+    });
+    var url = api.lastfm.url + '/?method=user.getrecenttracks&user=dejvprague&api_key=' + api.lastfm.key + '&format=json&page=' + page;
+    var json = await api.fetchJson(url, api.lastfm.options, 'Failed to get last fm history.'); // !!
+
+
+    if (json == null) {
+        // chyba získávání
+
+        console.log('json api null last fm');
+        return null;
+    }
+
+    var tracksHistory = json.recenttracks.track;
+    tracksHistory.shift();
+
+
+    await asyncForEach(tracksHistory, async trackApi => {
+        var trackNew = {
+            name: trackApi.name,
+            artist: trackApi.artist['#text'],
+            plays: 1
+        };
+        var found = false;
+        await asyncForEach(user.historyTracks, async trackHistory => {
+            if (trackHistory.name === trackNew.name && trackHistory.artist === trackNew.artist) {
+                trackHistory.plays++;
+                found = true;
+                return;
+            }
+        });
+        if (found === true) {
+            return;
+        }
+
+        user.historyTracks = user.historyTracks.concat(trackNew);
+    });
+
+
+    user.history = user.history.concat(tracksHistory);
+    if (json.recenttracks['@attr'].totalPages > page) {
+        await api.lastfm.getHistory(++page);
+    }
+    else {
+        await asyncForEach(el.main.error, async elError => {
+            elError.innerHTML = 'Click on the spotify playlist';
+        });
+        await asyncForEach(el.main.playlists, async elPlaylists => {
+            elPlaylists.style.display = 'block';
+        });
+    }
+}

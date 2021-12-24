@@ -1,0 +1,26 @@
+.tracklist .track {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: .7fr 1.5fr 1.5fr .3fr;
+      grid-template-columns: .7fr 1.5fr 1.5fr .3fr;
+  -ms-grid-rows: 1fr;
+      grid-template-rows: 1fr;
+  gap: 0px 0px;
+      grid-template-areas: ". . . .";
+}
+
+.tracklist .track:hover {
+  background-color: yellow;
+}
+
+.content {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: .4fr 1.6fr;
+      grid-template-columns: .4fr 1.6fr;
+  -ms-grid-rows: 1fr;
+      grid-template-rows: 1fr;
+  gap: 0px 0px;
+      grid-template-areas: ". . . .";
+}
+/*# sourceMappingURL=main.css.map */
