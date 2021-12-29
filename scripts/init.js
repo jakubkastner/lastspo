@@ -32,6 +32,11 @@ const program = {
             accessToken: 'user_spotify_useraccess',
             accessTokenExpires: 'user_spotify_useraccess_expires'
         }
+    },
+    lastfm: {
+        const: {
+            history: 'user_lastfm_history'
+        }
     }
 };
 

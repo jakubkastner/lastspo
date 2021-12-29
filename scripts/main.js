@@ -74,6 +74,8 @@ el.displayPlaylists = async function () {
         });
 
         var playlist = user.playlists.find(x => x.id === playlistEl.id);
+
+
         var tracks = await api.spotify.getPlaylistTracks(playlist.tracks.href);
         playlist.tracks.items = tracks;
 
@@ -89,9 +91,17 @@ el.displayPlaylists = async function () {
                     return;
                 }
             });
-            var trackHtml = '<div class="track"><div>' + track.artists[0].name + '</div><div>' + track.name + '</div><div>' + track.album.name + '</div><div>' + plays  + '</div></div>'
-            tracklistHtml += trackHtml;
+            if (plays === 0) {
+                var trackHtml = '<div class="track"><div>' + track.artists[0].name + '</div><div>' + track.name + '</div><div>' + track.album.name + '</div><div>' + plays + '</div></div>'
+                tracklistHtml += trackHtml;
+            }
         });
+
+
+        // sort plays
+        /*tracks.sort((a, b) => {
+            return a.plays - b.plays;
+        });*/
 
         tracklistHtml += '</div>';
         await asyncForEach(el.main.tracklist, async elTracklist => {
@@ -145,6 +155,13 @@ api.spotify.getPlaylistTracks = async function (url) {
 }
 
 api.lastfm.getHistory = async function (page = 1) {
+    var historyStorage = JSON.parse(localStorage.getItem(program.lastfm.const.history));
+    var lastTime = 0;
+    if (historyStorage != null) {
+        lastTime = historyStorage[0].date.uts;
+        //var nowTime = Math.floor(Date.now() / 1000);
+    }
+    var ret = false;
 
     /*await asyncForEach(el.main.playlists, async elPlaylists => {
         elPlaylists.style.display = 'none';
@@ -152,7 +169,7 @@ api.lastfm.getHistory = async function (page = 1) {
     await asyncForEach(el.main.error, async elError => {
         elError.innerHTML = 'Getting your history: ' + page;
     });
-    var url = api.lastfm.url + '/?method=user.getrecenttracks&user=dejvprague&api_key=' + api.lastfm.key + '&format=json&page=' + page;
+    var url = api.lastfm.url + '/?method=user.getrecenttracks&user=jakubkastner&api_key=' + api.lastfm.key + '&format=json&page=' + page;
     var json = await api.fetchJson(url, api.lastfm.options, 'Failed to get last fm history.'); // !!
 
 
@@ -164,10 +181,24 @@ api.lastfm.getHistory = async function (page = 1) {
     }
 
     var tracksHistory = json.recenttracks.track;
-    tracksHistory.shift();
+
+    if (tracksHistory.length <= 1) {
+        await api.lastfm.getHistory(page);
+        return;
+    }
+    if (tracksHistory[0]['@attr'] !== undefined) {
+        if (tracksHistory[0]['@attr'].nowplaying === true) {
+            tracksHistory.shift();
+        }
+    }
 
 
     await asyncForEach(tracksHistory, async trackApi => {
+        if ((lastTime != 0) && (lastTime <= trackApi.date.uts)) {
+            ret = true;
+            return;
+        }
+
         var trackNew = {
             name: trackApi.name,
             artist: trackApi.artist['#text'],
@@ -175,7 +206,7 @@ api.lastfm.getHistory = async function (page = 1) {
         };
         var found = false;
         await asyncForEach(user.historyTracks, async trackHistory => {
-            if (trackHistory.name === trackNew.name && trackHistory.artist === trackNew.artist) {
+            if (trackHistory.name.toUpperCase() === trackNew.name.toUpperCase() && trackHistory.artist.toUpperCase() === trackNew.artist.toUpperCase()) {
                 trackHistory.plays++;
                 found = true;
                 return;
@@ -190,15 +221,19 @@ api.lastfm.getHistory = async function (page = 1) {
 
 
     user.history = user.history.concat(tracksHistory);
-    if (json.recenttracks['@attr'].totalPages > page) {
+    if ((json.recenttracks['@attr'].totalPages > page) && (ret === false)) {
         await api.lastfm.getHistory(++page);
     }
     else {
+        // last page
         await asyncForEach(el.main.error, async elError => {
             elError.innerHTML = 'Click on the spotify playlist';
         });
         await asyncForEach(el.main.playlists, async elPlaylists => {
             elPlaylists.style.display = 'block';
         });
+
+        localStorage.removeItem(program.lastfm.const.history);
+        localStorage.setItem(program.lastfm.const.history, JSON.stringify(user.history));
     }
 }
