@@ -231,7 +231,7 @@ api.lastfm.getHistory = async function (userName, page = 1) {
                 artist: trackApi.artist['#text'],
                 plays: 1
             };
-
+            var found = false;
             for (let index = 0; index < user.historyTracks.length; index++) {
                 // vykoná funkci a čeká, dokuď se neprovede
                 var trackHistory = user.historyTracks[index];
@@ -240,14 +240,15 @@ api.lastfm.getHistory = async function (userName, page = 1) {
                     trackHistory.plays++;
 
                     index = user.historyTracks.length;
-                    index2 = tracksHistory.length;
+                    found = true;
+                    //index2 = tracksHistory.length;
                 }
             }
-
-            user.historyTracks = user.historyTracks.concat(trackNew);
-            console.log(trackNew);
+            if (found === false) {
+                user.historyTracks = user.historyTracks.concat(trackNew);
+                console.log(trackNew);
+            }
         }
-
     }
 
     /*await asyncForEach(tracksHistory, async trackApi => {
@@ -265,19 +266,7 @@ api.lastfm.getHistory = async function (userName, page = 1) {
         };
         var found = false;
 
-        for (let index = 0; index < user.historyTracks.length; index++) {
-            // vykoná funkci a čeká, dokuď se neprovede
-            var trackHistory = user.historyTracks[index];
-            console.log('trackHistory.name :>> ', trackHistory.name);
-            if (trackHistory.name.toUpperCase() === trackNew.name.toUpperCase() && trackHistory.artist.toUpperCase() === trackNew.artist.toUpperCase()) {
-                trackHistory.plays++;
-                console.log('ret :>> ', trackNew.name);
-                found = true;
-                index = user.historyTracks.length;
-            }
-        }
-
-        /*await asyncForEach(user.historyTracks, async trackHistory => {
+        await asyncForEach(user.historyTracks, async trackHistory => {
             console.log('trackHistory.name :>> ', trackHistory.name);
             if (trackHistory.name.toUpperCase() === trackNew.name.toUpperCase() && trackHistory.artist.toUpperCase() === trackNew.artist.toUpperCase()) {
                 trackHistory.plays++;
