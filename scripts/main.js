@@ -215,12 +215,13 @@ api.lastfm.getHistory = async function (userName, page = 1) {
         var lastScrobble = tracksHistory[0].date.uts;
 
         localStorage.removeItem(program.lastfm.const.lastScrobble);
-        localStorage.setItem(program.lastfm.const.lastScrobble, JSON.stringify(lastScrobble));
+        localStorage.setItem(program.lastfm.const.lastScrobble, lastScrobble);
     }
 
 
     await asyncForEach(tracksHistory, async trackApi => {
         if ((lastTime != 0) && (lastTime <= trackApi.date.uts)) {
+            console.log(lastTime);
             ret = true;
             return;
         }
@@ -243,8 +244,8 @@ api.lastfm.getHistory = async function (userName, page = 1) {
         }
 
         user.historyTracks = user.historyTracks.concat(trackNew);
+        console.log(trackNew);
     });
-
 
     user.history = user.history.concat(tracksHistory);
     if ((json.recenttracks['@attr'].totalPages > page) && (ret === false)) {
