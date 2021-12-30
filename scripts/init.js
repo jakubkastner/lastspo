@@ -35,7 +35,8 @@ const program = {
     },
     lastfm: {
         const: {
-            history: 'user_lastfm_history'
+            history: 'user_lastfm_history',
+            lastScrobble: 'user_lastfm_last'
         }
     }
 };

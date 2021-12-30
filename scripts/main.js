@@ -158,7 +158,8 @@ api.lastfm.getHistory = async function (page = 1) {
     var historyStorage = JSON.parse(localStorage.getItem(program.lastfm.const.history));
     var lastTime = 0;
     if (historyStorage != null) {
-        lastTime = historyStorage[0].date.uts;
+        lastTime = localStorage.getItem(program.lastfm.const.lastScrobble);
+        // historyStorage[0].date.uts;
         user.historyTracks = historyStorage;
         //var nowTime = Math.floor(Date.now() / 1000);
     }
@@ -191,6 +192,13 @@ api.lastfm.getHistory = async function (page = 1) {
         if (tracksHistory[0]['@attr'].nowplaying === true) {
             tracksHistory.shift();
         }
+    }
+
+    if (page === 1) {
+        var lastScrobble = tracksHistory[0].date.uts;
+
+        localStorage.removeItem(program.lastfm.const.lastScrobble);
+        localStorage.setItem(program.lastfm.const.lastScrobble, JSON.stringify(lastScrobble));
     }
 
 
