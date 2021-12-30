@@ -175,8 +175,10 @@ api.lastfm.getHistory = async function (userName, page = 1) {
             if (historyStorage != null) {
                 lastTime = localStorage.getItem(program.lastfm.const.lastScrobble);
                 // historyStorage[0].date.uts;
-                user.historyTracks = historyStorage;
-                //var nowTime = Math.floor(Date.now() / 1000);
+                if (page === 1) {
+                    user.historyTracks = historyStorage;
+                    //var nowTime = Math.floor(Date.now() / 1000);
+                }
             }
         }
     }
@@ -245,8 +247,10 @@ api.lastfm.getHistory = async function (userName, page = 1) {
                 }
             }
             if (found === false) {
+                console.log('user.historyTracks.length :>> ', user.historyTracks.lenght);
                 user.historyTracks = user.historyTracks.concat(trackNew);
                 console.log(trackNew);
+                console.log('user.historyTracks.length 2:>> ', user.historyTracks.lenght);
             }
         }
     }
