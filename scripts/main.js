@@ -218,13 +218,45 @@ api.lastfm.getHistory = async function (userName, page = 1) {
         localStorage.setItem(program.lastfm.const.lastScrobble, lastScrobble);
     }
 
+    for (let index2 = 0; index2 < tracksHistory.length; index2++) {
+        var trackApi = tracksHistory[index2];
 
-    await asyncForEach(tracksHistory, async trackApi => {
+        if ((lastTime != 0) && (trackApi.date.uts <= lastTime)) {
+            ret = true;
+            index2 = tracksHistory.length;
+        }
+        else {
+            var trackNew = {
+                name: trackApi.name,
+                artist: trackApi.artist['#text'],
+                plays: 1
+            };
+
+            for (let index = 0; index < user.historyTracks.length; index++) {
+                // vykoná funkci a čeká, dokuď se neprovede
+                var trackHistory = user.historyTracks[index];
+
+                if (trackHistory.name.toUpperCase() === trackNew.name.toUpperCase() && trackHistory.artist.toUpperCase() === trackNew.artist.toUpperCase()) {
+                    trackHistory.plays++;
+
+                    index = user.historyTracks.length;
+                    index2 = tracksHistory.length;
+                }
+            }
+
+            user.historyTracks = user.historyTracks.concat(trackNew);
+            console.log(trackNew);
+        }
+
+    }
+
+    /*await asyncForEach(tracksHistory, async trackApi => {
         if ((lastTime != 0) && (lastTime <= trackApi.date.uts)) {
             console.log(lastTime);
             ret = true;
             return;
         }
+        console.log('trackApi.name :>> ', trackApi.name);
 
         var trackNew = {
             name: trackApi.name,
@@ -232,20 +264,36 @@ api.lastfm.getHistory = async function (userName, page = 1) {
             plays: 1
         };
         var found = false;
-        await asyncForEach(user.historyTracks, async trackHistory => {
+
+        for (let index = 0; index < user.historyTracks.length; index++) {
+            // vykoná funkci a čeká, dokuď se neprovede
+            var trackHistory = user.historyTracks[index];
+            console.log('trackHistory.name :>> ', trackHistory.name);
             if (trackHistory.name.toUpperCase() === trackNew.name.toUpperCase() && trackHistory.artist.toUpperCase() === trackNew.artist.toUpperCase()) {
                 trackHistory.plays++;
+                console.log('ret :>> ', trackNew.name);
+                found = true;
+                index = user.historyTracks.length;
+            }
+        }
+
+        /*await asyncForEach(user.historyTracks, async trackHistory => {
+            console.log('trackHistory.name :>> ', trackHistory.name);
+            if (trackHistory.name.toUpperCase() === trackNew.name.toUpperCase() && trackHistory.artist.toUpperCase() === trackNew.artist.toUpperCase()) {
+                trackHistory.plays++;
+                console.log('ret :>> ', trackNew.name);
                 found = true;
                 return;
             }
-        });
-        if (found === true) {
-            return;
-        }
+        });*/
+    /*console.log('potom :>> ', trackNew.name);
+    if (found === true) {
+        return;
+    }
 
-        user.historyTracks = user.historyTracks.concat(trackNew);
-        console.log(trackNew);
-    });
+    user.historyTracks = user.historyTracks.concat(trackNew);
+    console.log(trackNew);
+});*/
 
     user.history = user.history.concat(tracksHistory);
     if ((json.recenttracks['@attr'].totalPages > page) && (ret === false)) {
