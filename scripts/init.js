@@ -5,11 +5,13 @@ const el = {
         error: document.querySelectorAll('.error'),
         playlists: document.querySelectorAll('.playlists'),
         playlist: document.querySelectorAll('.playlists .playlist'),
-        tracklist: document.querySelectorAll('.tracklist')
+        tracklist: document.querySelectorAll('.tracklist'),
+        lastfmUsername: document.getElementById('lastfm_username')
     },
     user: {
         login: {
-            spotify: document.querySelectorAll('.button.login.spotify')
+            spotify: document.querySelectorAll('.button.login.spotify'),
+            lastfm: document.querySelectorAll('.button.show.history')
         }
     }
 };
@@ -18,6 +20,9 @@ const el = {
 var user = {
     spotify: {
         accessToken: null
+    },
+    lastfm: {
+        last: null
     },
     playlists: [],
     history: [],
@@ -36,6 +41,7 @@ const program = {
     lastfm: {
         const: {
             history: 'user_lastfm_history',
+            username: 'user_lastfm_name',
             lastScrobble: 'user_lastfm_last'
         }
     }

@@ -2,7 +2,7 @@
  * Click to Spotify login button.
  * Login or update information about user.
  */
- el.user.login.spotify.forEach(el => el.addEventListener('click', async function () {
+el.user.login.spotify.forEach(el => el.addEventListener('click', async function () {
     await user.spotify.login(true);
 }));
 
@@ -11,6 +11,12 @@
  * Check Spotify login.
  */
 document.addEventListener('DOMContentLoaded', async function (event) {
+    var userLastfm = localStorage.getItem(program.lastfm.const.username);
+    if (userLastfm != null) {
+        el.main.lastfmUsername.value = userLastfm;
+        user.lastfm.last = userLastfm;
+    }
+
     // check spotify login (update access token, get info about user from api, ...)
     await user.spotify.login();
 
@@ -21,7 +27,6 @@ document.addEventListener('DOMContentLoaded', async function (event) {
         });
         // api spotify get history
         api.spotify.getPlaylists();
-        api.lastfm.getHistory();
     }
 });
 
