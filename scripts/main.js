@@ -54,11 +54,11 @@ api.spotify.getPlaylists = async function (url = api.spotify.url + '/me/playlist
 
 
 el.user.login.lastfm.forEach(elem => elem.addEventListener('click', async function () {
-    var user = el.main.lastfmUsername.value;
-    await api.lastfm.getHistory(user);
+    var userName = el.main.lastfmUsername.value;
+    await api.lastfm.getHistory(userName);
 
     localStorage.removeItem(program.lastfm.const.username);
-    localStorage.setItem(program.lastfm.const.username, user);
+    localStorage.setItem(program.lastfm.const.username, userName);
 }));
 
 el.displayPlaylists = async function () {
@@ -169,13 +169,15 @@ api.lastfm.getHistory = async function (userName, page = 1) {
     var lastTime = 0;
     var ret = false;
 
-    if (userName.toUpperCase() === user.lastfm.last.toUpperCase) {
-        var historyStorage = JSON.parse(localStorage.getItem(program.lastfm.const.history));
-        if (historyStorage != null) {
-            lastTime = localStorage.getItem(program.lastfm.const.lastScrobble);
-            // historyStorage[0].date.uts;
-            user.historyTracks = historyStorage;
-            //var nowTime = Math.floor(Date.now() / 1000);
+    if (user.lastfm.last != null) {
+        if (userName.toUpperCase() === user.lastfm.last.toUpperCase()) {
+            var historyStorage = JSON.parse(localStorage.getItem(program.lastfm.const.history));
+            if (historyStorage != null) {
+                lastTime = localStorage.getItem(program.lastfm.const.lastScrobble);
+                // historyStorage[0].date.uts;
+                user.historyTracks = historyStorage;
+                //var nowTime = Math.floor(Date.now() / 1000);
+            }
         }
     }
 
