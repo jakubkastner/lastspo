@@ -189,7 +189,7 @@ api.lastfm.getHistory = async function (page = 1) {
         return;
     }
     if (tracksHistory[0]['@attr'] !== undefined) {
-        if (tracksHistory[0]['@attr'].nowplaying === true) {
+        if (tracksHistory[0]['@attr'].nowplaying === 'true') {
             tracksHistory.shift();
         }
     }
