@@ -164,18 +164,17 @@ api.spotify.getPlaylistTracks = async function (url) {
     return tracks;
 }
 
-api.lastfm.getHistory = async function (userName, page = 1) {
+api.lastfm.getHistory = async function (userName, page = 1, lastTime = 0) {
 
-    var lastTime = 0;
     var ret = false;
 
-    if (user.lastfm.last != null) {
-        if (userName.toUpperCase() === user.lastfm.last.toUpperCase()) {
-            var historyStorage = JSON.parse(localStorage.getItem(program.lastfm.const.history));
-            if (historyStorage != null) {
-                lastTime = parseInt(localStorage.getItem(program.lastfm.const.lastScrobble));
-                // historyStorage[0].date.uts;
-                if (page === 1) {
+    if (page === 1) {
+        if (user.lastfm.last != null) {
+            if (userName.toUpperCase() === user.lastfm.last.toUpperCase()) {
+                var historyStorage = JSON.parse(localStorage.getItem(program.lastfm.const.history));
+                if (historyStorage != null) {
+                    // historyStorage[0].date.uts;
+                    lastTime = parseInt(localStorage.getItem(program.lastfm.const.lastScrobble));
                     user.historyTracks = historyStorage;
                     //var nowTime = Math.floor(Date.now() / 1000);
                 }
@@ -204,7 +203,7 @@ api.lastfm.getHistory = async function (userName, page = 1) {
     var tracksHistory = json.recenttracks.track;
 
     if (tracksHistory.length <= 1) {
-        await api.lastfm.getHistory(userName, page);
+        await api.lastfm.getHistory(userName, page, lastTime);
         return;
     }
     if (tracksHistory[0]['@attr'] !== undefined) {
@@ -244,11 +243,12 @@ api.lastfm.getHistory = async function (userName, page = 1) {
                     index = user.historyTracks.length;
                     found = true;
                     //index2 = tracksHistory.length;
+                    console.log('trackHistory :>> ', trackHistory);
                 }
             }
             if (found === false) {
                 user.historyTracks = user.historyTracks.concat(trackNew);
-                console.log(trackNew);
+                console.log('trackNew :>> ', trackNew);
             }
         }
     }
@@ -288,7 +288,7 @@ api.lastfm.getHistory = async function (userName, page = 1) {
 
     //user.history = user.history.concat(tracksHistory);
     if ((parseInt(json.recenttracks['@attr'].totalPages) > page) && (ret === false)) {
-        await api.lastfm.getHistory(userName, ++page);
+        await api.lastfm.getHistory(userName, ++page, lastTime);
     }
     else {
         // last page
