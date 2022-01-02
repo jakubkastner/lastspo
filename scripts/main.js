@@ -173,7 +173,7 @@ api.lastfm.getHistory = async function (userName, page = 1) {
         if (userName.toUpperCase() === user.lastfm.last.toUpperCase()) {
             var historyStorage = JSON.parse(localStorage.getItem(program.lastfm.const.history));
             if (historyStorage != null) {
-                lastTime = localStorage.getItem(program.lastfm.const.lastScrobble);
+                lastTime = parseInt(localStorage.getItem(program.lastfm.const.lastScrobble));
                 // historyStorage[0].date.uts;
                 if (page === 1) {
                     user.historyTracks = historyStorage;
@@ -214,7 +214,7 @@ api.lastfm.getHistory = async function (userName, page = 1) {
     }
 
     if (page === 1) {
-        var lastScrobble = tracksHistory[0].date.uts;
+        var lastScrobble = parseInt(tracksHistory[0].date.uts);
 
         localStorage.removeItem(program.lastfm.const.lastScrobble);
         localStorage.setItem(program.lastfm.const.lastScrobble, lastScrobble);
@@ -223,7 +223,7 @@ api.lastfm.getHistory = async function (userName, page = 1) {
     for (let index2 = 0; index2 < tracksHistory.length; index2++) {
         var trackApi = tracksHistory[index2];
 
-        if ((lastTime != 0) && (trackApi.date.uts <= lastTime)) {
+        if ((lastTime != 0) && (parseInt(trackApi.date.uts) <= lastTime)) {
             ret = true;
             index2 = tracksHistory.length;
         }
@@ -247,10 +247,8 @@ api.lastfm.getHistory = async function (userName, page = 1) {
                 }
             }
             if (found === false) {
-                console.log('user.historyTracks.length :>> ', user.historyTracks.lenght);
                 user.historyTracks = user.historyTracks.concat(trackNew);
                 console.log(trackNew);
-                console.log('user.historyTracks.length 2:>> ', user.historyTracks.lenght);
             }
         }
     }
@@ -288,8 +286,8 @@ api.lastfm.getHistory = async function (userName, page = 1) {
     console.log(trackNew);
 });*/
 
-    user.history = user.history.concat(tracksHistory);
-    if ((json.recenttracks['@attr'].totalPages > page) && (ret === false)) {
+    //user.history = user.history.concat(tracksHistory);
+    if ((parseInt(json.recenttracks['@attr'].totalPages) > page) && (ret === false)) {
         await api.lastfm.getHistory(userName, ++page);
     }
     else {

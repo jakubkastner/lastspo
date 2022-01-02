@@ -25,7 +25,7 @@ var user = {
         last: null
     },
     playlists: [],
-    history: [],
+    /*history: [],*/
     historyTracks: []
 };
 
