@@ -16,18 +16,23 @@
         <h1>SpoPlayHis</h1>
     </header>
     <main>
-        <!--<h2 class="title">Login</h2>-->
-        <h3 class="error">To see your SpoPlayHis, you must login with your Spotify account.</h3>
-        <button class="button login spotify"><i class="fab fa-spotify"></i>Login via Spotify</button>
-        <input type="text" class="lastfm name" id="lastfm_username" name="lastfm_username" placeholder="last.fm username">
-        <button class="button show history">Get last.fm history</button>
+        <h3 class="error"></h3>
+        <div class="spotify">
+            <label class="info">To see your SpoPlayHis, you must login with your Spotify account.</label>
+            <button class="button login"><i class="fab fa-spotify"></i>Login via Spotify</button>
+        </div>
+        <div class="lastfm">
+            <label class="info" for="lastfm_username">Last.fm user name:</label>
+            <input type="text" class="name" id="lastfm_username" name="lastfm_username" placeholder="last.fm username">
+            <button class="button show history">Get last.fm history</button>
+        </div>
         <div class="content">
             <div class="playlists"></div>
             <div class="tracklist"></div>
         </div>
     </main>
     <footer>
-        <p>&copy 2021 Jakub Kastner</p>
+        <p>&copy 2022 Jakub Kastner</p>
     </footer>
     <script src="scripts/init.js"></script>
     <script src="scripts/main.js"></script>

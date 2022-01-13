@@ -62,9 +62,9 @@ el.user.login.lastfm.forEach(elem => elem.addEventListener('click', async functi
 }));
 
 el.displayPlaylists = async function () {
-    var playlistsHtml = '';
+    var playlistsHtml = '<h3 class="info">Spotify playlists:</h3>';
     await asyncForEach(user.playlists, async playlist => {
-        var playlistHtml = '<div class="playlist" id="' + playlist.id + '">' + playlist.name + ' (' + playlist.tracks.total + ')</div>'
+        var playlistHtml = '<button class="playlist" id="' + playlist.id + '">' + playlist.name + ' (' + playlist.tracks.total + ')</button>'
         playlistsHtml += playlistHtml;
     });
     await asyncForEach(el.main.playlists, async elPlaylists => {
@@ -89,7 +89,7 @@ el.displayPlaylists = async function () {
         var tracks = await api.spotify.getPlaylistTracks(playlist.tracks.href);
         playlist.tracks.items = tracks;
 
-        var tracklistHtml = '<div class="tracklist"><h4>' + playlist.name + '</h4><div class="track"><div class="artist">Artist</div><div class="name">Track</div><div class="album">Album</div><div class="plays">Number of plays</div></div>';
+        var tracklistHtml = '<div class="tracklist"><h3>Playlist "' + playlist.name + '":</h3><div class="track title"><h4 class="artist">Artist</h4><h4 class="name">Track</h4><h4 class="album">Album</h4><h4 class="plays">Number of plays</h4></div>';
 
 
         await asyncForEach(tracks, async trackFull => {
@@ -102,7 +102,7 @@ el.displayPlaylists = async function () {
                 }
             });
             if (plays === 0) {
-                var trackHtml = '<div class="track"><div>' + track.artists[0].name + '</div><div>' + track.name + '</div><div>' + track.album.name + '</div><div>' + plays + '</div></div>'
+                var trackHtml = '<div class="track"><p class="artist">' + track.artists[0].name + '</p><p>' + track.name + '</p><p>' + track.album.name + '</p><p>' + plays + '</p></div>'
                 tracklistHtml += trackHtml;
             }
         });

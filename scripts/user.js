@@ -23,7 +23,10 @@ document.addEventListener('DOMContentLoaded', async function (event) {
     // user is logged in
     if (user.spotify.accessToken) {
         await asyncForEach(el.user.login.spotify, async elLoginSpotify => {
-            elLoginSpotify.style.display = 'none';
+            elLoginSpotify.innerHTML = 'Logout from Spotify';
+        });
+        await asyncForEach(el.main.spotifyInfo, async elInfo => {
+            elInfo.innerHTML = 'Logged in from Spotify: "' + user.spotify.userName + '"';
         });
         // api spotify get history
         api.spotify.getPlaylists();
@@ -232,6 +235,9 @@ api.spotify.getUser = async function () {
         console.log("json api null");
         return;
     }
+
+    user.spotify.userName = json.display_name;
+
     // succesfully get user info
     //console.log(json);
     //user.spotify = json;

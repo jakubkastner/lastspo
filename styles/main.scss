@@ -6,16 +6,82 @@
     grid-template-areas:
         ". . . .";
 
+    &.title:hover {
+        background-color: transparent;
+    }
+
     &:hover {
-        background-color: yellow;
+        background-color: rgb(233, 233, 237);
     }
 }
 
 .content {
     display: grid;
-    grid-template-columns: .4fr 1.6fr;
+    grid-template-columns: .3fr 1.7fr;
     grid-template-rows: 1fr;
     gap: 0px 0px;
     grid-template-areas:
         ". . . .";
+}
+
+.spotify,
+.lastfm {
+    display: inline-flex;
+    width: 100%;
+    margin: 10px 0;
+    gap: 7px;
+
+    label,
+    h4 {
+        margin: auto 0;
+        padding-left: 10px;
+    }
+}
+
+.tracklist {
+    .artist {
+        padding-left: 10px;
+    }
+
+    p,
+    h4 {
+        margin: 10px 0;
+    }
+
+}
+
+.playlists {
+
+    .playlist {
+        width: 100%;
+        text-align: right;
+    }
+}
+
+button {
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+input {
+    border: 0;
+}
+
+body {
+    margin: 0;
+}
+
+h1 {
+    padding-left: 20px;
+}
+
+.playlists h3,
+footer p {
+    margin-left: 10px;
+}
+
+label {
+    font-size: 15px;
+    font-weight: 700;
 }
