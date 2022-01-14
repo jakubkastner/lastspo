@@ -62,6 +62,21 @@ user.spotify.login = async function (newLogin = false) {
             await api.spotify.getUser();
             return;
         }
+        user.spotify.accessToken = null;
+        user.spotify.api = null;
+        localStorage.removeItem(program.spotify.const.accessToken);
+        localStorage.removeItem(program.spotify.const.accessTokenExpires);
+
+        await asyncForEach(el.user.login.spotify, async elLoginSpotify => {
+            elLoginSpotify.innerHTML = 'Login via Spotify';
+        });
+        await asyncForEach(el.main.spotifyInfo, async elInfo => {
+            elInfo.innerHTML = 'To see your SpoPlayHis, you must login with your Spotify account.';
+        });
+
+        await asyncForEach(el.main.playlists, async elPlaylists => {
+            elPlaylists.innerHTML = '<p>To see Spotify playlists you need to login via Spotify.</p>';
+        });
 
         // info about user from spotify api is ok
         return;
