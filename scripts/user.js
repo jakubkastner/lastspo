@@ -71,7 +71,7 @@ user.spotify.login = async function (newLogin = false) {
             elLoginSpotify.innerHTML = 'Login via Spotify';
         });
         await asyncForEach(el.main.spotifyInfo, async elInfo => {
-            elInfo.innerHTML = 'To see your SpoPlayHis, you must login with your Spotify account.';
+            elInfo.innerHTML = 'Please login with your Spotify account:';
         });
 
         await asyncForEach(el.main.playlists, async elPlaylists => {

@@ -2,12 +2,13 @@
 const el = {
     main: {
         title: document.querySelectorAll('.title'),
-        error: document.querySelectorAll('.error'),
         playlists: document.querySelectorAll('.playlists'),
         playlist: document.querySelectorAll('.playlists .playlist'),
         tracklist: document.querySelectorAll('.tracklist'),
         lastfmUsername: document.getElementById('lastfm_username'),
-        spotifyInfo: document.querySelectorAll('.spotify .info')
+        spotifyInfo: document.querySelectorAll('.spotify .info'),
+        spotifyMessage: document.querySelectorAll('.spotify .message'),
+        lastfmMessage: document.querySelectorAll('.lastfm .message')
     },
     user: {
         login: {
@@ -49,7 +50,7 @@ const program = {
     }
 };
 
-// api (spotify, genius)
+// api (spotify, lastfm)
 var api = {
     lastfm: {
         key: 'f6760aa8ae0005261fa183552094fd81',

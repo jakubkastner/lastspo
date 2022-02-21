@@ -62,13 +62,14 @@ el.user.login.lastfm.forEach(elem => elem.addEventListener('click', async functi
 }));
 
 el.displayPlaylists = async function () {
-    var playlistsHtml = '<h3 class="info">Spotify playlists:</h3>';
+    var playlistsHtml = '';
+    //= '<h3 class="info">Spotify playlists:</h3>';
     await asyncForEach(user.playlists, async playlist => {
         var playlistHtml = '<button class="playlist" id="' + playlist.id + '">' + playlist.name + ' (' + playlist.tracks.total + ')</button>'
         playlistsHtml += playlistHtml;
     });
     await asyncForEach(el.main.playlists, async elPlaylists => {
-        elPlaylists.insertAdjacentHTML('afterbegin', playlistsHtml);
+        elPlaylists.insertAdjacentHTML('beforeend', playlistsHtml);
     });
 
     el.main.playlist = document.querySelectorAll('.playlists .playlist');
@@ -188,8 +189,8 @@ api.lastfm.getHistory = async function (userName, page = 1, lastTime = 0) {
     /*await asyncForEach(el.main.playlists, async elPlaylists => {
         elPlaylists.style.display = 'none';
     });*/
-    await asyncForEach(el.main.error, async elError => {
-        elError.innerHTML = 'Getting your history: ' + page;
+    await asyncForEach(el.main.lastfmMessage, async elMessage => {
+        lastfmMessage.innerHTML = 'Getting your history: ' + page;
     });
     var url = api.lastfm.url + '/?method=user.getrecenttracks&user=' + userName + '&api_key=' + api.lastfm.key + '&format=json&page=' + page;
     var json = await api.fetchJson(url, api.lastfm.options, 'Failed to get last fm history.'); // !!
@@ -294,8 +295,8 @@ api.lastfm.getHistory = async function (userName, page = 1, lastTime = 0) {
     }
     else {
         // last page
-        await asyncForEach(el.main.error, async elError => {
-            elError.innerHTML = 'Click on the spotify playlist';
+        await asyncForEach(el.main.spotifyMessage, async elMessage => {
+            elMessage.innerHTML = 'Select Spotify playlist to view history';
         });
         await asyncForEach(el.main.playlists, async elPlaylists => {
             elPlaylists.style.display = 'block';
