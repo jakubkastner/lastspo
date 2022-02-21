@@ -68,7 +68,7 @@ el.displayPlaylists = async function () {
         playlistsHtml += playlistHtml;
     });
     await asyncForEach(el.main.playlists, async elPlaylists => {
-        elPlaylists.innerHTML += playlistsHtml;
+        elPlaylists.insertAdjacentHTML('afterbegin', playlistsHtml);
     });
 
     el.main.playlist = document.querySelectorAll('.playlists .playlist');
@@ -89,7 +89,7 @@ el.displayPlaylists = async function () {
         var tracks = await api.spotify.getPlaylistTracks(playlist.tracks.href);
         playlist.tracks.items = tracks;
 
-        var tracklistHtml = '<div class="tracklist"><h3>Playlist "' + playlist.name + '":</h3><div class="track title"><h4 class="artist">Artist</h4><h4 class="name">Track</h4><h4 class="album">Album</h4><h4 class="plays">Number of plays</h4></div>';
+        var tracklistHtml = '<h3>Playlist "' + playlist.name + '":</h3><div class="track title"><h4 class="artist">Artist</h4><h4 class="name">Track</h4><h4 class="album">Album</h4><h4 class="plays">Number of plays</h4></div>';
 
 
         await asyncForEach(tracks, async trackFull => {
@@ -113,9 +113,8 @@ el.displayPlaylists = async function () {
             return a.plays - b.plays;
         });*/
 
-        tracklistHtml += '</div>';
         await asyncForEach(el.main.tracklist, async elTracklist => {
-            elTracklist.innerHTML += tracklistHtml;
+            elTracklist.insertAdjacentHTML('afterbegin', tracklistHtml);
         });
     }));
 }
