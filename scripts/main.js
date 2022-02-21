@@ -94,6 +94,9 @@ el.displayPlaylists = async function () {
 
         await asyncForEach(tracks, async trackFull => {
             var track = trackFull.track;
+            if (track === null) {
+                console.log(track);
+            }
             var plays = 0;
             await asyncForEach(user.historyTracks, async trackHistory => {
                 if (trackHistory.name.toUpperCase() === track.name.toUpperCase() && trackHistory.artist.toUpperCase() === track.artists[0].name.toUpperCase()) {
