@@ -9,14 +9,6 @@
       grid-template-areas: ". . . .";
 }
 
-.tracklist .track.title:hover {
-  background-color: transparent;
-}
-
-.tracklist .track:hover {
-  background-color: #e9e9ed;
-}
-
 .content {
   display: -ms-grid;
   display: grid;
@@ -68,6 +60,11 @@ button {
 
 input {
   border: 0;
+  padding: 0 10px;
+}
+
+input:focus {
+  outline: none !important;
 }
 
 body {
@@ -86,5 +83,53 @@ footer p {
 label {
   font-size: 15px;
   font-weight: 700;
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: white;
+    color: black;
+  }
+  body button {
+    background-color: whitesmoke;
+    color: black;
+  }
+  body button:hover {
+    background-color: #e9e9ed;
+  }
+  body input {
+    background-color: #e9e9ed;
+    color: black;
+  }
+  body .tracklist .track.title:hover {
+    background-color: transparent;
+  }
+  body .tracklist .track:hover {
+    background-color: whitesmoke;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #0c0c0c;
+    color: white;
+  }
+  body button {
+    background-color: #161616;
+    color: white;
+  }
+  body button:hover {
+    background-color: #212121;
+  }
+  body input {
+    background-color: #212121;
+    color: white;
+  }
+  body .tracklist .track.title:hover {
+    background-color: transparent;
+  }
+  body .tracklist .track:hover {
+    background-color: #161616;
+  }
 }
 /*# sourceMappingURL=main.css.map */

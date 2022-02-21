@@ -6,13 +6,6 @@
     grid-template-areas:
         ". . . .";
 
-    &.title:hover {
-        background-color: transparent;
-    }
-
-    &:hover {
-        background-color: rgb(233, 233, 237);
-    }
 }
 
 .content {
@@ -66,6 +59,10 @@ button {
 
 input {
     border: 0;
+    padding: 0 10px;
+    &:focus {
+        outline: none !important;
+    }
 }
 
 body {
@@ -84,4 +81,71 @@ footer p {
 label {
     font-size: 15px;
     font-weight: 700;
+}
+
+// theme
+// 1 = light
+// 2 = dark
+@mixin theme-colors($theme: false) {
+    // -> init colors
+    // dark colors
+    $color_1: rgb(12, 12, 12);
+    $color_2: rgb(22, 22, 22);
+    $color_3: rgb(33, 33, 33);
+    $color_text: rgb(255, 255, 255);
+
+    // light colors
+    @if $theme==1 {
+        $color_1: rgb(255, 255, 255);
+        $color_2: rgb(245, 245, 245);
+        $color_3: rgb(233, 233, 237);
+        $color_text: rgb(0, 0, 0);
+    }
+
+    & {
+        background-color: $color_1;
+        color: $color_text;
+    }
+
+    button {
+        background-color: $color_2;
+        color: $color_text;
+        &:hover {
+            background-color: $color_3;
+        }
+    }
+
+    input {
+        background-color: $color_3;
+        color: $color_text;
+
+    }
+
+
+    .tracklist .track {
+        &.title:hover {
+            background-color: transparent;
+        }
+
+        &:hover {
+            background-color: $color_2;
+        }
+    }
+
+}
+
+// DARK/LIGHT MODE
+
+// light mode
+@media (prefers-color-scheme: light) {
+    body {
+        @include theme-colors($theme: 1);
+    }
+}
+
+// dark mode
+@media (prefers-color-scheme: dark) {
+    body {
+        @include theme-colors($theme: 2);
+    }
 }
