@@ -192,7 +192,7 @@ api.lastfm.getHistory = async function (userName, page = 1, lastTime = 0) {
     await asyncForEach(el.main.lastfmMessage, async elMessage => {
         lastfmMessage.innerHTML = 'Getting your history: ' + page;
     });
-    var url = api.lastfm.url + '/?method=user.getrecenttracks&user=' + userName + '&api_key=' + api.lastfm.key + '&format=json&page=' + page;
+    var url = api.lastfm.url + '/?method=user.getrecenttracks&user=' + userName + '&api_key=' + api.lastfm.key + '&format=json&limit=200&page=' + page;
     var json = await api.fetchJson(url, api.lastfm.options, 'Failed to get last fm history.'); // !!
 
 
